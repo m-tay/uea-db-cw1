@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+			<title>Ticket System Prototype</title>
+			<link rel="stylesheet" type="text/css" href="static/mycss.css">
+            <link href="https://fonts.googleapis.com/css?family=Work+Sans" rel="stylesheet">
+	</head>
+	
+	<body>
+        <div class="mainbox">
+            <h2>Add a customer</h2>
+            {{ msg1 }} <br>
+            {{ error1 }}
+            <form action = "addCustomer" method = "post" >
+                ID <input type="text" name = "customerID">
+                Name <input type="text" name = "customerName">
+                Email <input type="text" name="customerEmail">
+                <input type="submit" value = "Add Customer">
+            </form>
+        </div>
+        <div class="mainbox">
+            <h2>Create new ticket</h2>
+            ID <input type="text" name="ID">
+            Problem <input type="text" name = "problem">
+            Status <input type="text" name = "status">
+            Priority <input type="text" name = "priority">
+            Customer ID <input type="text" name="customerID">
+            Product ID <input type="text" name="productID">
+            <input type="submit" value="Create ticket">
+        </div>
+
+
+	</body>
+</html>
