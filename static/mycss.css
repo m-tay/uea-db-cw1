@@ -14,3 +14,27 @@ body {
     border-width: 3px;
     border-color: black;
 }
+
+input {
+    font-family: 'Work Sans', sans-serif;
+}
+
+#tablestyle {
+    font-family: 'Work Sans', sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#tablestyle td, #tablestyle th {
+    padding: 8px;
+}
+
+#tablestyle tr:hover {background-color: #65e8e6;}
+
+#tablestyle th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #53afad;
+    color: white;
+}

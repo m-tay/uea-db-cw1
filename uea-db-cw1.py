@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-import psycopg2
+import psycopg2, psycopg2.extras
 
 app = Flask(__name__)
 
@@ -96,7 +96,7 @@ def addupdate():
         conn = dbconnect()
         cur = conn.cursor()
 
-        # execute task 2 query
+        # execute task 3 query
         cur.execute('INSERT INTO TicketUpdate VALUES(%s, %s, CURRENT_TIMESTAMP, %s, %s)', \
                     [ticketUpdateID, message, ticketID, staffID])
         conn.commit()
@@ -109,6 +109,36 @@ def addupdate():
     finally:
         if conn:
             conn.close()
+
+
+@app.route('/openTickets', methods=['GET'])
+def opentickets():
+    try:
+        # clear connection in case of previous issues
+        conn = None
+
+        # connect to db, get cursor
+        conn = dbconnect()
+        cur = conn.cursor()
+
+        # execute task 4 query
+        cur.execute("SELECT Ticket.TicketID, MAX(TicketUpdate.UpdateTime) As Last_Updated FROM Ticket \
+                     LEFT JOIN TicketUpdate ON TicketUpdate.TicketID = Ticket.TicketID \
+                     WHERE Ticket.Status = 'open' GROUP BY Ticket.TicketID ORDER BY Ticket.TicketID")
+        querydata = cur.fetchall()
+
+        if querydata:
+            return render_template('opentickets.html', rows=querydata)
+        else:
+            return render_template('index.html', msg4='No data found')
+
+    except Exception as e:
+        return render_template('index.html', msg4='Error loading open tickets', error4=e)
+
+    finally:
+        if conn:
+            conn.close()
+
 
 
 
