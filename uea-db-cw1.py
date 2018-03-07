@@ -34,7 +34,7 @@ def addcustomer():
 
         # execute task 1 query
         cur.execute('INSERT INTO Customer VALUES (%s, %s, %s)', \
-        [customerID, customerName, customerEmail])
+                    [customerID, customerName, customerEmail])
         conn.commit()
 
         return render_template('index.html', msg1='Successfully added customer')
@@ -47,7 +47,7 @@ def addcustomer():
             conn.close()
 
 
-@app.route('/addTicket', methods = ['POST'])
+@app.route('/addTicket', methods=['POST'])
 def addticket():
     try:
         # clear connection in case of previous issues
@@ -66,8 +66,8 @@ def addticket():
         cur = conn.cursor()
 
         # execute task 2 query
-        cur.execute('INSERT INTO  Ticket VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP, %s, %s)', \
-        [ticketID, problem, status, priority, customerID, productID])
+        cur.execute('INSERT INTO Ticket VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP, %s, %s)', \
+                    [ticketID, problem, status, priority, customerID, productID])
         conn.commit()
 
         return render_template('index.html', msg2='Successfully added ticket')
@@ -78,6 +78,39 @@ def addticket():
     finally:
         if conn:
             conn.close()
+
+
+@app.route('/addUpdate', methods=['POST'])
+def addupdate():
+    try:
+        # clear connection in case of previous issues
+        conn = None
+
+        # get all form values for query
+        ticketUpdateID = int(request.form['ticketupdateID'])
+        message = request.form['message']
+        ticketID = int(request.form['ticketID'])
+        staffID = int(request.form['staffID'])
+
+        # connect to db, get cursor
+        conn = dbconnect()
+        cur = conn.cursor()
+
+        # execute task 2 query
+        cur.execute('INSERT INTO TicketUpdate VALUES(%s, %s, CURRENT_TIMESTAMP, %s, %s)', \
+                    [ticketUpdateID, message, ticketID, staffID])
+        conn.commit()
+
+        return render_template('index.html', msg3='Successfully added ticket')
+
+    except Exception as e:
+        return render_template('index.html', msg3='Error adding ticket', error3=e)
+
+    finally:
+        if conn:
+            conn.close()
+
+
 
 
 if __name__ == '__main__':

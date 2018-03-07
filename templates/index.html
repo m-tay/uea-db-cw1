@@ -8,26 +8,45 @@
 	</head>
 	
 	<body>
+
+    <!-- Task 1 -->
         <div class="mainbox">
             <h2>Add a customer</h2>
-            {{ msg1 }} <br>
-            {{ error1 }}
+            {{ msg1 }} <br> {{ error1 }}
             <form action = "addCustomer" method = "post" >
-                ID <input type="text" name = "customerID">
-                Name <input type="text" name = "customerName">
+                ID <input type="text" name="customerID">
+                Name <input type="text" name="customerName">
                 Email <input type="text" name="customerEmail">
-                <input type="submit" value = "Add Customer">
+                <input type="submit" value="Add Customer">
             </form>
         </div>
+
+    <!-- Task 2 -->
         <div class="mainbox">
             <h2>Create new ticket</h2>
-            ID <input type="text" name="ID">
-            Problem <input type="text" name = "problem">
-            Status <input type="text" name = "status">
-            Priority <input type="text" name = "priority">
-            Customer ID <input type="text" name="customerID">
-            Product ID <input type="text" name="productID">
-            <input type="submit" value="Create ticket">
+            {{ msg2 }} <br> {{ error2 }}
+            <form action ="addTicket" method="post">
+                ID <input type="text" name="ticketID">
+                Problem <input type="text" name="problem">
+                Status <input type="text" name="status">
+                Priority <input type="text" name="priority">
+                Customer ID <input type="text" name="customerID">
+                Product ID <input type="text" name="productID">
+                <input type="submit" value="Create ticket">
+            </form>
+        </div>
+
+    <!-- Task 3 -->
+        <div class="mainbox">
+            <h2>Add update to ticket</h2>
+            {{ msg3 }} <br> {{ error3 }}
+            <form action="addUpdate" method="post">
+                Ticket Update ID <input type="text" name="ticketupdateID">
+                Update Message <input type="text" name="message">
+                Ticket ID <input type="text" name="ticketID">
+                Staff ID <input type="text" name="staffID">
+                <input type="submit" value="Add update">
+            </form>
         </div>
 
 
