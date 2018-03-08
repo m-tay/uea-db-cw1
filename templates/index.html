@@ -58,6 +58,26 @@
             </form>
         </div>
 
+    <!-- Task 5 -->
+        <div class="mainbox">
+            <h2>Close ticket</h2>
+            {{ msg5 }} <br> {{ error5 }}
+            <form action="closeTicket" method="post">
+                Ticket ID <input type="text" name="ticketID">
+                <input type="submit" value="Close ticket">
+            </form>
+        </div>
+
+    <!-- Task 6 -->
+        <div class="mainbox">
+            <h2>List ticket details</h2>
+            {{ msg6 }} <br> {{  error6 }}
+            <form action="listDetails" method="post">
+                Ticket ID <input type="text" name="ticketID">
+                <input type="submit" value="List details">
+            </form>
+
+        </div>
 
 	</body>
 </html>

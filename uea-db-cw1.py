@@ -5,6 +5,9 @@ app = Flask(__name__)
 
 
 def dbconnect():
+    # clear conn in case of previous issues
+    conn = None
+
     try:
         conn = psycopg2.connect("dbname=studentdb user=student host=127.0.0.1 password=dbpassword")
         return conn
@@ -20,9 +23,6 @@ def index():
 @app.route('/addCustomer', methods=['POST'])
 def addcustomer():
     try:
-        # clear connection in case of previous issues
-        conn = None
-
         # get all form values for query
         customerID = int(request.form['customerID'])
         customerName = request.form['customerName']
@@ -50,9 +50,6 @@ def addcustomer():
 @app.route('/addTicket', methods=['POST'])
 def addticket():
     try:
-        # clear connection in case of previous issues
-        conn = None
-
         # get all form values for query
         ticketID = int(request.form['ticketID'])
         problem = request.form['problem']
@@ -83,9 +80,6 @@ def addticket():
 @app.route('/addUpdate', methods=['POST'])
 def addupdate():
     try:
-        # clear connection in case of previous issues
-        conn = None
-
         # get all form values for query
         ticketUpdateID = int(request.form['ticketupdateID'])
         message = request.form['message']
@@ -114,9 +108,6 @@ def addupdate():
 @app.route('/openTickets', methods=['GET'])
 def opentickets():
     try:
-        # clear connection in case of previous issues
-        conn = None
-
         # connect to db, get cursor
         conn = dbconnect()
         cur = conn.cursor()
@@ -140,8 +131,70 @@ def opentickets():
             conn.close()
 
 
+@app.route('/closeTicket', methods=['POST'])
+def closeticket():
+    try:
+        # get all form values for query
+        ticketID = int(request.form['ticketID'])
+
+        # connect to db, get cursor
+        conn = dbconnect()
+        cur = conn.cursor()
+
+        # execute task 5 query
+        cur.execute("UPDATE Ticket SET Status = 'closed' WHERE TicketID = %s", \
+                    [ticketID])
+        conn.commit()
+
+        return render_template('index.html', msg5='Successfully closed ticket')
+
+    except Exception as e:
+        return render_template('index.html', msg5='Error closing ticket', error5=e)
+
+    finally:
+        if conn:
+            conn.close()
+
+
+@app.route('/listDetails', methods=['POST'])
+def listdetails():
+    try:
+        # get ticketID value for query
+        ticketID = int(request.form['ticketID'])
+
+
+        # connect to db, get cursor
+        conn = dbconnect()
+        cur = conn.cursor()
+
+        # execute task 6 queries
+        # get problem statement
+        cur.execute("SELECT problem FROM Ticket WHERE TicketID = %s", [ticketID])
+        problem = cur.fetchone()
+
+        # get ticketupdates
+        cur.execute("SELECT TicketUpdate.Message, TicketUpdate.UpdateTime, \
+                     COALESCE(Staff.Name, Customer.Name) As AuthoredBy FROM TicketUpdate \
+                     LEFT JOIN Staff ON Staff.StaffID = TicketUpdate.StaffID, Customer, Ticket \
+                     WHERE TicketUpdate.TicketID = Ticket.TicketID AND Ticket.CustomerID = Customer.CustomerID \
+                     AND Ticket.TicketID = %s ORDER BY TicketUpdate.UpdateTime", [ticketID])
+        querydata = cur.fetchall()
+
+
+        if problem:
+            return render_template('listdetails.html', problem=problem[0], rows=querydata)
+        else:
+            return render_template('index.html', msg6='No data found')
+
+    except Exception as e:
+        return render_template('index.html', msg6='Error listing details', error6=e)
+
+    finally:
+        if conn:
+            conn.close()
+
 
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+			<title>Ticket System Prototype</title>
+			<link rel="stylesheet" type="text/css" href="static/mycss.css">
+            <link href="https://fonts.googleapis.com/css?family=Work+Sans" rel="stylesheet">
+	</head>
+	
+	<body>
+
+    <!-- Task 4 -->
+        <div class="mainbox">
+            <h2>Ticket Details</h2>
+            <h3>Problem: {{ problem }}</h3>
+            <table id="tablestyle">
+            <tr>
+                <th>Update</th> <th>Updated Time</th> <th>Authored By</th>
+            </tr>
+            {% for row in rows %}
+                <tr>
+                    {% for item in row%}
+                        <td>
+                            {{item}}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </table>
+            <br>
+            <form action="/" method="GET" >
+                <input type="submit" value="Home" >
+            </form>
+        </div>
+
+
+
+	</body>
+</html>
