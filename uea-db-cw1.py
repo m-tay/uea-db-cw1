@@ -194,7 +194,57 @@ def listdetails():
             conn.close()
 
 
+@app.route('/closedStatus', methods=['GET'])
+def closedstatus():
+    try:
+        # connect to db, get cursor
+        conn = dbconnect()
+        cur = conn.cursor()
 
+        # execute task 7 query
+        cur.execute("SELECT Ticket.TicketID, COUNT(TicketUpdate.TicketUpdateID) As NumOfUpdates, \
+                     (Min(TicketUpdate.UpdateTime) - Ticket.LoggedTime) As TimeToFirstUpdate, \
+                     (Max(TicketUpdate.UpdateTime) - Ticket.LoggedTime) As TimeToLastUpdate \
+                     FROM Ticket, TicketUpdate WHERE Status = 'closed' AND Ticket.TicketID = TicketUpdate.TicketID \
+                     GROUP BY Ticket.TicketID ORDER BY Ticket.TicketID")
+
+        querydata = cur.fetchall()
+
+        if querydata:
+            return render_template('closedtickets.html', rows=querydata)
+        else:
+            return render_template('index.html', msg7='No data found')
+
+    except Exception as e:
+        return render_template('index.html', msg7='Error listing details', error7=e)
+
+    finally:
+        if conn:
+            conn.close()
+
+
+@app.route('/deleteCustomer', methods=['POST'])
+def deletecustomer():
+    try:
+        # get all form values for query
+        customerID = int(request.form['customerID'])
+
+        # connect to db, get cursor
+        conn = dbconnect()
+        cur = conn.cursor()
+
+        # execute task 5 query
+        cur.execute("DELETE FROM Customer WHERE CustomerID = %s", [customerID])
+        conn.commit()
+
+        return render_template('index.html', msg8='Successfully deleted customer')
+
+    except Exception as e:
+        return render_template('index.html', msg8='Error deleting customer', error8=e)
+
+    finally:
+        if conn:
+            conn.close()
 
 if __name__ == '__main__':
     app.run(debug=True)

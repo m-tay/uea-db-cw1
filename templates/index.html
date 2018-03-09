@@ -76,7 +76,25 @@
                 Ticket ID <input type="text" name="ticketID">
                 <input type="submit" value="List details">
             </form>
+        </div>
 
+    <!-- Task 7 -->
+        <div class="mainbox">
+            <h2>Status of closed tickets</h2>
+            {{ msg7 }} <br> {{ error7 }}
+            <form action="closedStatus" method="get">
+                <input type="submit" value="Get details">
+            </form>
+        </div>
+
+    <!-- Task 8 -->
+        <div class="mainbox">
+            <h2>Remove customer</h2>
+            {{ msg8 }} <br> {{ error8 }}
+            <form action="deleteCustomer" method="post">
+                Customer ID <input type="text" name="customerID">
+                <input type="submit" value="Remove Customer">
+            </form>
         </div>
 
 	</body>
