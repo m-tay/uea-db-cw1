@@ -13,40 +13,46 @@
         <div class="mainbox">
             <h2>Add a customer</h2>
             {{ msg1 }} <br> {{ error1 }}
-            <form action = "addCustomer" method = "post" >
-                ID <input type="text" name="customerID">
-                Name <input type="text" name="customerName">
-                Email <input type="text" name="customerEmail">
-                <input type="submit" value="Add Customer">
+            <div class="flex">
+            <form class="column" action = "addCustomer" method = "post" >
+                <label>ID <input class="right" type="text" name="customerID"></label>
+                <label>Name <input class="right" type="text" name="customerName"></label>
+                <label>Email <input class="right" type="text" name="customerEmail"></label>
+                <label><input class="right" type="submit" value="Add Customer"></label>
             </form>
+            </div>
         </div>
 
     <!-- Task 2 -->
         <div class="mainbox">
             <h2>Create new ticket</h2>
             {{ msg2 }} <br> {{ error2 }}
-            <form action ="addTicket" method="post">
-                ID <input type="text" name="ticketID">
-                Problem <input type="text" name="problem">
-                Status <input type="text" name="status">
-                Priority <input type="text" name="priority">
-                Customer ID <input type="text" name="customerID">
-                Product ID <input type="text" name="productID">
-                <input type="submit" value="Create ticket">
+            <div class="flex">
+            <form class="column" action ="addTicket" method="post">
+                <label>ID <input class="right" type="text" name="ticketID"></label>
+                <label>Problem <input class="right" type="text" name="problem"></label>
+                <label>Status <input class="right" type="text" name="status"></label>
+                <label>Priority <input class="right" type="text" name="priority"></label>
+                <label>Customer ID <input class="right" type="text" name="customerID"></label>
+                <label>Product ID <input class="right" type="text" name="productID"></label>
+                <label><input class="right" type="submit" value="Create ticket"></label>
             </form>
+            </div>
         </div>
 
     <!-- Task 3 -->
         <div class="mainbox">
             <h2>Add update to ticket</h2>
             {{ msg3 }} <br> {{ error3 }}
-            <form action="addUpdate" method="post">
-                Ticket Update ID <input type="text" name="ticketupdateID">
-                Update Message <input type="text" name="message">
-                Ticket ID <input type="text" name="ticketID">
-                Staff ID <input type="text" name="staffID">
-                <input type="submit" value="Add update">
+            <div class="flex">
+            <form class="column" action="addUpdate" method="post">
+                <label>Ticket Update ID <input class="right" type="text" name="ticketupdateID"></label>
+                <label>Update Message <input class="right" type="text" name="message"></label>
+                <label>Ticket ID <input class="right" type="text" name="ticketID"></label>
+                <label>Staff ID <input class="right" type="text" name="staffID"></label>
+                <label><input class="right" type="submit" value="Add update"></label>
             </form>
+            </div>
         </div>
 
     <!-- Task 4 -->
@@ -62,20 +68,25 @@
         <div class="mainbox">
             <h2>Close ticket</h2>
             {{ msg5 }} <br> {{ error5 }}
-            <form action="closeTicket" method="post">
-                Ticket ID <input type="text" name="ticketID">
-                <input type="submit" value="Close ticket">
+            <div class="flex">
+            <form class="column" action="closeTicket" method="post">
+                <label>Ticket ID <input class="right" type="text" name="ticketID"></label>
+                <label><input class="right" type="submit" value="Close ticket"></label>
             </form>
+            </div>
         </div>
 
     <!-- Task 6 -->
         <div class="mainbox">
             <h2>List ticket details</h2>
             {{ msg6 }} <br> {{  error6 }}
-            <form action="listDetails" method="post">
-                Ticket ID <input type="text" name="ticketID">
-                <input type="submit" value="List details">
+            <div class="flex">
+            <form class="column" action="listDetails" method="post">
+                <label>Ticket ID <input class="right" type="text" name="ticketID"></label>
+                <label><input class="right" type="submit" value="List details"></labeljames
+
             </form>
+            </div>
         </div>
 
     <!-- Task 7 -->
@@ -91,10 +102,12 @@
         <div class="mainbox">
             <h2>Remove customer</h2>
             {{ msg8 }} <br> {{ error8 }}
-            <form action="deleteCustomer" method="post">
-                Customer ID <input type="text" name="customerID">
-                <input type="submit" value="Remove Customer">
+            <div class="flex">
+            <form class="column" action="deleteCustomer" method="post">
+                <label>Customer ID <input class="right" type="text" name="customerID"></label>
+                <label><input class="right" type="submit" value="Remove Customer"></label>
             </form>
+            </div>
         </div>
 
 	</body>

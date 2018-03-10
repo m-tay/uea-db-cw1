@@ -15,8 +15,27 @@ body {
     border-color: black;
 }
 
+.flex {
+    display: flex;
+}
+
+.right {
+    float: right;
+    margin-left:1em;
+}
+
+.button {
+    float: right;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
 input {
     font-family: 'Work Sans', sans-serif;
+        width: 16em;
 }
 
 #tablestyle {
