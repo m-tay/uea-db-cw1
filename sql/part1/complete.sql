@@ -15,6 +15,9 @@ ALTER TABLE TicketUpdate
 ADD PRIMARY KEY (TicketUpdateID);
 
 -- Add foreign keys
+-- Assumptions:
+-- * no data should ever be deleted, a history of all problems + customer contact should be stored forever (all ON DELETE RESTRICT)
+-- * keys might be changed, so all FKs hace ON UPDATE CASCADE
 ALTER TABLE Ticket
 ADD FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
 ON DELETE RESTRICT
@@ -50,6 +53,59 @@ TYPE StatusType;
 ALTER TABLE Ticket
 ALTER Priority 
 TYPE PriorityType;
+
+-- Add other constraints
+
+-- Assume all customers must have names
+ALTER TABLE Customer
+ALTER Name
+SET Not Null;
+
+-- Assume all customer emails must be unique
+ALTER TABLE Customer
+ADD CONSTRAINT email_unique UNIQUE (Email);
+
+-- Assume all staff must have names
+ALTER TABLE Staff
+ALTER Name
+SET Not Null;
+
+-- Assume all products must have names
+ALTER TABLE Product
+ALTER Name
+SET Not Null;
+
+-- Assume tickets must have problem, times and IDs
+ALTER TABLE Ticket
+ALTER Problem 
+SET Not Null;
+
+ALTER TABLE Ticket
+ALTER LoggedTime
+SET Not Null;
+
+ALTER TABLE Ticket
+ALTER CustomerID
+SET Not Null;
+
+ALTER TABLE Ticket
+ALTER TicketID
+SET Not Null;
+
+-- Assume ticketupdates must have messages, times and ticketID
+
+ALTER TABLE TicketUpdate
+ALTER Message
+SET Not Null;
+
+ALTER TABLE TicketUpdate
+ALTER UpdateTime
+SET Not Null;
+
+ALTER TABLE TicketUpdate
+ALTER TicketID
+SET Not Null;
+
 
 -- Create foreign key indexes
 CREATE INDEX tcustomerididx ON Ticket(CustomerID);

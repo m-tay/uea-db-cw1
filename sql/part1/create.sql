@@ -1,6 +1,6 @@
 CREATE TABLE Staff
 (
-	StaffID		INTEGER,
+	StaffID			INTEGER,
 	Name			VARCHAR(40)
 );
 
@@ -20,8 +20,8 @@ CREATE TABLE Customer
 CREATE TABLE Ticket
 (
 	TicketID		INTEGER,
-	Problem		VARCHAR(1000),
-	Status		VARCHAR(20),
+	Problem			VARCHAR(1000),
+	Status			VARCHAR(20),
 	Priority		INTEGER,
 	LoggedTime		TIMESTAMP,
 	CustomerID		INTEGER,
@@ -31,8 +31,8 @@ CREATE TABLE Ticket
 CREATE TABLE TicketUpdate
 (
 	TicketUpdateID	INTEGER,
-	Message		VARCHAR(1000),
+	Message			VARCHAR(1000),
 	UpdateTime		TIMESTAMP,
 	TicketID		INTEGER,
-	StaffID	INTEGER
-)	;
+	StaffID			INTEGER
+);
