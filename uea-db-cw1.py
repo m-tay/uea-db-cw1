@@ -28,6 +28,10 @@ def addcustomer():
         customerName = request.form['customerName']
         customerEmail = request.form['customerEmail']
 
+        # set customerName to null so db can validate
+        if(customerName == ''):
+            customerName = None
+
         # connect to db, get cursor
         conn = dbconnect()
         cur = conn.cursor()
