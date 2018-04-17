@@ -50,9 +50,15 @@ ALTER TABLE Ticket
 ALTER Status
 TYPE StatusType;
 
+ALTER TABLE TICKET
+ALTER Status 
+SET DEFAULT ('open');
+
 ALTER TABLE Ticket
 ALTER Priority 
 TYPE PriorityType;
+
+-- TODO ADD DEFAULT OPEN TO TICKET!!!!!!
 
 -- Add other constraints
 
@@ -60,6 +66,13 @@ TYPE PriorityType;
 ALTER TABLE Customer
 ALTER Name
 SET Not Null;
+
+-- Check no blank field returned
+ALTER TABLE Customer
+ADD CHECK (Name <> '');
+
+ALTER TABLE Customer
+ADD CHECK (Email LIKE '%@%.%')
 
 -- Assume all customer emails must be unique
 ALTER TABLE Customer
