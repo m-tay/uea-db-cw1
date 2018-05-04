@@ -10,9 +10,10 @@ def dbconnect():
 
     try:
         conn = psycopg2.connect("dbname=studentdb user=student host=127.0.0.1 password=dbpassword")
+
         return conn
     except Exception as e:
-        print("Error connecting to database")
+        print("Error connecting to database:" + e)
 
 
 @app.route('/')
@@ -28,9 +29,10 @@ def addcustomer():
         customerName = request.form['customerName']
         customerEmail = request.form['customerEmail']
 
-        # connect to db, get cursor
+        # connect to db, get cursor, set schema
         conn = dbconnect()
         cur = conn.cursor()
+        cur.execute('SET SEARCH_PATH to supportdb')
 
         # execute task 1 query
         cur.execute('INSERT INTO Customer VALUES (%s, %s, %s)', \
@@ -58,9 +60,10 @@ def addticket():
         customerID = request.form['customerID']
         productID = request.form['productID']
 
-        # connect to db, get cursor
+        # connect to db, get cursor, set schema
         conn = dbconnect()
         cur = conn.cursor()
+        cur.execute('SET SEARCH_PATH to supportdb')
 
         # execute task 2 query
         cur.execute('INSERT INTO Ticket VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP, %s, %s)', \
@@ -86,9 +89,10 @@ def addupdate():
         ticketID = int(request.form['ticketID'])
         staffID = int(request.form['staffID'])
 
-        # connect to db, get cursor
+        # connect to db, get cursor, set schema
         conn = dbconnect()
         cur = conn.cursor()
+        cur.execute('SET SEARCH_PATH to supportdb')
 
         # execute task 3 query
         cur.execute('INSERT INTO TicketUpdate VALUES(%s, %s, CURRENT_TIMESTAMP, %s, %s)', \
@@ -108,14 +112,14 @@ def addupdate():
 @app.route('/openTickets', methods=['GET'])
 def opentickets():
     try:
-        # connect to db, get cursor
+        # connect to db, get cursor, set schema
         conn = dbconnect()
         cur = conn.cursor()
+        cur.execute('SET search_path to supportdb')
+
 
         # execute task 4 query
-        cur.execute("SELECT Ticket.TicketID, MAX(TicketUpdate.UpdateTime) As Last_Updated FROM Ticket \
-                     LEFT JOIN TicketUpdate ON TicketUpdate.TicketID = Ticket.TicketID \
-                     WHERE Ticket.Status = 'open' GROUP BY Ticket.TicketID ORDER BY Ticket.TicketID")
+        cur.execute("SELECT * FROM opentickets")
         querydata = cur.fetchall()
 
         if querydata:
@@ -137,16 +141,34 @@ def closeticket():
         # get all form values for query
         ticketID = int(request.form['ticketID'])
 
-        # connect to db, get cursor
+        # connect to db, get cursor, set schema
         conn = dbconnect()
         cur = conn.cursor()
+        cur.execute('SET SEARCH_PATH to supportdb')
 
-        # execute task 5 query
-        cur.execute("UPDATE Ticket SET Status = 'closed' WHERE TicketID = %s", \
-                    [ticketID])
-        conn.commit()
+        # check if ticket currently closed
+        cur.execute("SELECT Status FROM Ticket WHERE TicketID = %s", [ticketID])
+        currentstatus = cur.fetchone()
 
-        return render_template('index.html', msg5='Successfully closed ticket')
+        if currentstatus is None:
+            currentstatus = 'nothing found'
+
+        if currentstatus[0] == 'closed':
+            return render_template('index.html', msg5='Error: ticket already closed')
+
+        else:
+            # execute task 5 query
+            cur.execute("UPDATE Ticket SET Status = 'closed' WHERE TicketID = %s", \
+                        [ticketID])
+
+            # get number of rows affected in cursor, to check for problems later
+            rowsaffected = cur.rowcount
+            conn.commit()
+
+            if rowsaffected == 0:
+                return render_template('index.html', msg5='Error: no ticket found')
+            else:
+                return render_template('index.html', msg5='Successfully closed ticket')
 
     except Exception as e:
         return render_template('index.html', msg5='Error closing ticket', error5=e)
@@ -163,9 +185,10 @@ def listdetails():
         ticketID = int(request.form['ticketID'])
 
 
-        # connect to db, get cursor
+        # connect to db, get cursor, set schema
         conn = dbconnect()
         cur = conn.cursor()
+        cur.execute('SET SEARCH_PATH to supportdb')
 
         # execute task 6 queries
         # get problem statement
@@ -197,16 +220,13 @@ def listdetails():
 @app.route('/closedStatus', methods=['GET'])
 def closedstatus():
     try:
-        # connect to db, get cursor
+        # connect to db, get cursor, set schema
         conn = dbconnect()
         cur = conn.cursor()
+        cur.execute('SET SEARCH_PATH to supportdb')
 
         # execute task 7 query
-        cur.execute("SELECT Ticket.TicketID, COUNT(TicketUpdate.TicketUpdateID) As NumOfUpdates, \
-                     (Min(TicketUpdate.UpdateTime) - Ticket.LoggedTime) As TimeToFirstUpdate, \
-                     (Max(TicketUpdate.UpdateTime) - Ticket.LoggedTime) As TimeToLastUpdate \
-                     FROM Ticket, TicketUpdate WHERE Status = 'closed' AND Ticket.TicketID = TicketUpdate.TicketID \
-                     GROUP BY Ticket.TicketID ORDER BY Ticket.TicketID")
+        cur.execute("SELECT * FROM closedstatus")
 
         querydata = cur.fetchall()
 
@@ -229,9 +249,10 @@ def deletecustomer():
         # get all form values for query
         customerID = int(request.form['customerID'])
 
-        # connect to db, get cursor
+        # connect to db, get cursor, set schema
         conn = dbconnect()
         cur = conn.cursor()
+        cur.execute('SET SEARCH_PATH to supportdb')
 
         # execute task 5 query
         cur.execute("DELETE FROM Customer WHERE CustomerID = %s", [customerID])

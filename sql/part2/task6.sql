@@ -21,3 +21,4 @@ WHERE TicketUpdate.TicketID = Ticket.TicketID
 AND Ticket.CustomerID = Customer.CustomerID
 AND Ticket.TicketID = 6
 ORDER BY TicketUpdate.UpdateTime;
+
