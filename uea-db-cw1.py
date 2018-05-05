@@ -23,16 +23,17 @@ def index():
 
 @app.route('/addCustomer', methods=['POST'])
 def addcustomer():
-    try:
-        # get all form values for query
-        customerID = int(request.form['customerID'])
-        customerName = request.form['customerName']
-        customerEmail = request.form['customerEmail']
 
+    try:
         # connect to db, get cursor, set schema
         conn = dbconnect()
         cur = conn.cursor()
         cur.execute('SET SEARCH_PATH to supportdb')
+
+        # get all form values for query
+        customerID = int(request.form['customerID'])
+        customerName = request.form['customerName']
+        customerEmail = request.form['customerEmail']
 
         # execute task 1 query
         cur.execute('INSERT INTO Customer VALUES (%s, %s, %s)', \
@@ -52,6 +53,11 @@ def addcustomer():
 @app.route('/addTicket', methods=['POST'])
 def addticket():
     try:
+        # connect to db, get cursor, set schema
+        conn = dbconnect()
+        cur = conn.cursor()
+        cur.execute('SET SEARCH_PATH to supportdb')
+
         # get all form values for query
         ticketID = int(request.form['ticketID'])
         problem = request.form['problem']
@@ -60,17 +66,16 @@ def addticket():
         customerID = request.form['customerID']
         productID = request.form['productID']
 
-        # connect to db, get cursor, set schema
-        conn = dbconnect()
-        cur = conn.cursor()
-        cur.execute('SET SEARCH_PATH to supportdb')
-
         # execute task 2 query
         cur.execute('INSERT INTO Ticket VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP, %s, %s)', \
                     [ticketID, problem, status, priority, customerID, productID])
         conn.commit()
 
-        return render_template('index.html', msg2='Successfully added ticket')
+        # get row added to display on page
+        cur.execute('SELECT * FROM Ticket WHERE ticketID = %s', [ticketID])
+        row = str(cur.fetchone()) # must be cast to str to be displayed on template
+
+        return render_template('index.html', msg2='Successfully added ticket: ' + row)
 
     except Exception as e:
         return render_template('index.html', msg2='Error adding ticket', error2=e)
@@ -83,16 +88,16 @@ def addticket():
 @app.route('/addUpdate', methods=['POST'])
 def addupdate():
     try:
+        # connect to db, get cursor, set schema
+        conn = dbconnect()
+        cur = conn.cursor()
+        cur.execute('SET SEARCH_PATH to supportdb')
+
         # get all form values for query
         ticketUpdateID = int(request.form['ticketupdateID'])
         message = request.form['message']
         ticketID = int(request.form['ticketID'])
         staffID = int(request.form['staffID'])
-
-        # connect to db, get cursor, set schema
-        conn = dbconnect()
-        cur = conn.cursor()
-        cur.execute('SET SEARCH_PATH to supportdb')
 
         # execute task 3 query
         cur.execute('INSERT INTO TicketUpdate VALUES(%s, %s, CURRENT_TIMESTAMP, %s, %s)', \
@@ -117,7 +122,6 @@ def opentickets():
         cur = conn.cursor()
         cur.execute('SET search_path to supportdb')
 
-
         # execute task 4 query
         cur.execute("SELECT * FROM opentickets")
         querydata = cur.fetchall()
@@ -138,13 +142,13 @@ def opentickets():
 @app.route('/closeTicket', methods=['POST'])
 def closeticket():
     try:
-        # get all form values for query
-        ticketID = int(request.form['ticketID'])
-
         # connect to db, get cursor, set schema
         conn = dbconnect()
         cur = conn.cursor()
         cur.execute('SET SEARCH_PATH to supportdb')
+
+        # get all form values for query
+        ticketID = int(request.form['ticketID'])
 
         # check if ticket currently closed
         cur.execute("SELECT Status FROM Ticket WHERE TicketID = %s", [ticketID])
@@ -181,14 +185,13 @@ def closeticket():
 @app.route('/listDetails', methods=['POST'])
 def listdetails():
     try:
-        # get ticketID value for query
-        ticketID = int(request.form['ticketID'])
-
-
         # connect to db, get cursor, set schema
         conn = dbconnect()
         cur = conn.cursor()
         cur.execute('SET SEARCH_PATH to supportdb')
+
+        # get ticketID value for query
+        ticketID = int(request.form['ticketID'])
 
         # execute task 6 queries
         # get problem statement
@@ -246,19 +249,25 @@ def closedstatus():
 @app.route('/deleteCustomer', methods=['POST'])
 def deletecustomer():
     try:
-        # get all form values for query
-        customerID = int(request.form['customerID'])
-
         # connect to db, get cursor, set schema
         conn = dbconnect()
         cur = conn.cursor()
         cur.execute('SET SEARCH_PATH to supportdb')
 
+        # get all form values for query
+        customerID = int(request.form['customerID'])
+
         # execute task 5 query
         cur.execute("DELETE FROM Customer WHERE CustomerID = %s", [customerID])
+
+        # get rows affected, to check if a customer was deleted
+        rowsaffected = cur.rowcount
         conn.commit()
 
-        return render_template('index.html', msg8='Successfully deleted customer')
+        if rowsaffected == 0:
+            return render_template('index.html', msg8='Error: no customer found')
+        else:
+            return render_template('index.html', msg8='Successfully deleted customer')
 
     except Exception as e:
         return render_template('index.html', msg8='Error deleting customer', error8=e)
