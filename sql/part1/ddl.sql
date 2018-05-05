@@ -1,3 +1,25 @@
+-- Create schema
+CREATE SCHEMA supportdb;
+
+-- Add tables to schema
+ALTER TABLE customer
+SET SCHEMA supportdb;
+
+ALTER TABLE product
+SET SCHEMA supportdb;
+
+ALTER TABLE staff
+SET SCHEMA supportdb;
+
+ALTER TABLE ticket
+SET SCHEMA supportdb;
+
+ALTER TABLE ticketupdate
+SET SCHEMA supportdb;
+
+-- Set to new schema
+SET search_path to supportdb;
+
 -- Add primary keys
 ALTER TABLE Staff
 ADD PRIMARY KEY (StaffID);
@@ -52,13 +74,11 @@ TYPE StatusType;
 
 ALTER TABLE TICKET
 ALTER Status 
-SET DEFAULT ('open');
+SET DEFAULT ('open');	
 
 ALTER TABLE Ticket
 ALTER Priority 
 TYPE PriorityType;
-
--- TODO ADD DEFAULT OPEN TO TICKET!!!!!!
 
 -- Add other constraints
 
@@ -67,12 +87,9 @@ ALTER TABLE Customer
 ALTER Name
 SET Not Null;
 
--- Check no blank field returned
+-- Check email address matches basic email pattern
 ALTER TABLE Customer
-ADD CHECK (Name <> '');
-
-ALTER TABLE Customer
-ADD CHECK (Email LIKE '%@%.%')
+ADD CHECK (Email LIKE '%@%.%');
 
 -- Assume all customer emails must be unique
 ALTER TABLE Customer
@@ -126,6 +143,28 @@ CREATE INDEX tproductididx ON Ticket(ProductID);
 CREATE INDEX tuticketididx ON TicketUpdate(TicketID);
 CREATE INDEX tustaffididx ON TicketUpdate(StaffID);
 
--- Create common query index
+-- Create index on ticket status
 CREATE INDEX tstatusidx ON Ticket(Status);
+
+
+-- Create views
+
+-- Open tickets view (task #4)
+CREATE VIEW opentickets AS
+SELECT Ticket.TicketID, MAX(TicketUpdate.UpdateTime) As Last_Updated FROM Ticket 
+LEFT JOIN TicketUpdate ON TicketUpdate.TicketID = Ticket.TicketID 
+WHERE Ticket.Status = 'open' GROUP BY Ticket.TicketID ORDER BY Ticket.TicketID;
+
+-- Status of closed tickets view (task #7)
+CREATE VIEW closedstatus AS
+SELECT Ticket.TicketID, 
+COUNT(TicketUpdate.TicketUpdateID) As NumOfUpdates, 
+(Min(TicketUpdate.UpdateTime) - Ticket.LoggedTime) As TimeToFirstUpdate,
+(Max(TicketUpdate.UpdateTime) - Ticket.LoggedTime) As TimeToLastUpdate
+FROM Ticket, TicketUpdate
+WHERE Status = 'closed'
+AND Ticket.TicketID = TicketUpdate.TicketID
+GROUP BY Ticket.TicketID, Ticket.LoggedTime
+ORDER BY Ticket.TicketID;
+
 
